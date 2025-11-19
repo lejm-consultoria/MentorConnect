@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card } from '../../../../front-end - Copia/src/components/ui/Card';
-import { Pill } from '../../../../front-end - Copia/src/components/ui/Pill';
+import { Card } from '../ui/Card';
+import { Pill } from '../ui/Pill';
 import { MapPinIcon, BriefcaseIcon } from 'lucide-react';
 interface ProfileCardProps {
   profile: {

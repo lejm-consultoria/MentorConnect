@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Modal } from '../../../../front-end - Copia/src/components/ui/Modal';
-import { Button } from '../../../../front-end - Copia/src/components/ui/Button';
-import { Pill } from '../../../../front-end - Copia/src/components/ui/Pill';
+import { Modal } from '../ui/Modal';
+import { Button } from '../ui/Button';
+import { Pill } from '../ui/Pill';
 import { MapPinIcon, BriefcaseIcon, GraduationCapIcon, CodeIcon, HeartIcon, MessageCircleIcon, ThumbsUpIcon, CheckCircleIcon } from 'lucide-react';
 interface ProfileModalProps {
   isOpen: boolean;

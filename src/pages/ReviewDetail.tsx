@@ -4,7 +4,7 @@ import { Header } from '../components/layout/Header';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { TextArea } from '../components/ui/TextArea';
-import { ArrowLeftIcon, CheckCircleIcon, XCircleIcon, UserIcon, SparklesIcon } from 'lucide-react';
+import { ArrowLeftIcon, CheckCircleIcon, XCircleIcon, AlertTriangleIcon, SparklesIcon } from 'lucide-react';
 export function ReviewDetail() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -13,7 +13,9 @@ export function ReviewDetail() {
   } = useParams();
   const review = location.state?.review;
   const [aiResponse, setAiResponse] = useState(review?.aiResponse || '');
-  const [showFeedback, setShowFeedback] = useState(false);
+  const [showApproveSuccess, setShowApproveSuccess] = useState(false);
+  const [showRejectConfirm, setShowRejectConfirm] = useState(false);
+  const [showRejectSuccess, setShowRejectSuccess] = useState(false);
   if (!review) {
     return <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <Header />
@@ -25,15 +27,23 @@ export function ReviewDetail() {
       </div>;
   }
   const handleApprove = () => {
-    setShowFeedback(true);
+    setShowApproveSuccess(true);
     setTimeout(() => {
       navigate('/reviews');
-    }, 2000);
+    }, 2500);
   };
   const handleReject = () => {
-    if (confirm('Tem certeza que deseja rejeitar esta resposta?')) {
+    setShowRejectConfirm(true);
+  };
+  const confirmReject = () => {
+    setShowRejectConfirm(false);
+    setShowRejectSuccess(true);
+    setTimeout(() => {
       navigate('/reviews');
-    }
+    }, 2500);
+  };
+  const cancelReject = () => {
+    setShowRejectConfirm(false);
   };
   return <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
@@ -89,20 +99,6 @@ export function ReviewDetail() {
             </div>
           </Card>
 
-          {showFeedback && <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm">
-              <Card className="max-w-md mx-4">
-                <div className="p-8 text-center">
-                  <CheckCircleIcon className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-                    Resposta Aprovada!
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    A resposta foi enviada para {review.askedBy}
-                  </p>
-                </div>
-              </Card>
-            </div>}
-
           <Card>
             <div className="p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
@@ -126,5 +122,68 @@ export function ReviewDetail() {
           </Card>
         </div>
       </main>
+
+      {/* Approve Success Animation */}
+      {showApproveSuccess && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="animate-[fadeIn_0.3s_ease-in-out] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-sm mx-4 border-2 border-green-500">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4 animate-[scaleIn_0.5s_ease-out]">
+                <CheckCircleIcon className="w-12 h-12 text-green-600 dark:text-green-400 animate-[checkmark_0.6s_ease-out]" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                Resposta Aprovada!
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                A resposta foi enviada para{' '}
+                <span className="font-semibold text-gray-900 dark:text-gray-100">
+                  {review.askedBy}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>}
+
+      {/* Reject Confirmation Dialog */}
+      {showRejectConfirm && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="animate-[fadeIn_0.3s_ease-in-out] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-md mx-4 border-2 border-red-500">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
+                <AlertTriangleIcon className="w-12 h-12 text-red-600 dark:text-red-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                Rejeitar Resposta?
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                Tem certeza que deseja rejeitar esta resposta? A sugestão da IA
+                será descartada e você precisará criar uma nova resposta.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
+                <Button variant="secondary" onClick={cancelReject} className="flex-1">
+                  Cancelar
+                </Button>
+                <Button variant="danger" onClick={confirmReject} className="flex-1">
+                  Sim, Rejeitar
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>}
+
+      {/* Reject Success Animation */}
+      {showRejectSuccess && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="animate-[fadeIn_0.3s_ease-in-out] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-sm mx-4 border-2 border-red-500">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4 animate-[scaleIn_0.5s_ease-out]">
+                <XCircleIcon className="w-12 h-12 text-red-600 dark:text-red-400 animate-[checkmark_0.6s_ease-out]" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                Resposta Rejeitada
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                A sugestão da IA foi descartada com sucesso
+              </p>
+            </div>
+          </div>
+        </div>}
     </div>;
 }
